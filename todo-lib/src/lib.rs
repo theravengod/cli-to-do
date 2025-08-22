@@ -2,6 +2,7 @@ mod task;
 
 use colored::Colorize;
 use console::Term;
+use std::io::Write;
 use task::Task;
 
 pub fn run_mode(args: &Vec<String>) {
@@ -19,29 +20,37 @@ pub fn run_mode(args: &Vec<String>) {
 
 fn show_menu(term: &Term, store: &mut Vec<Task>) {
     println!("..:: {} ::..\n", "To Do Manager".bright_white());
-    println!("Possible actions:");
-    println!("{}. Create a task", "1".yellow());
-    println!("{}. Search for a task by title", "2".yellow());
-    println!("{}. Show all tasks titles", "3".yellow());
-    println!("{}. Edit a task", "4".yellow());
-    println!("{}. Delete a task", "5".yellow());
-    println!("{}. Quit", "Q".red());
+    show_actions();
 
     let mut should_exit = false;
     while !should_exit {
         print!("Choose your action: ");
+        std::io::stdout().flush().unwrap(); // Ensure the prompt is displayed
         let action = term.read_char();
         match (action) {
             Ok(ch) => {
                 match (ch) {
                     '1' => create_new_task(&term, store),
                     '2' => search_note_by_title(term, store),
-                    _ => { should_exit = true } // TODO: handle error
+                    'h' | 'H' => show_actions(),
+                    'q' | 'Q' => should_exit = true, // TODO: handle error
+                    _ => println!("Invalid option")
                 };
             }
             Err(_) => {}
         }
     }
+}
+
+fn show_actions() {
+    println!("Possible actions:");
+    println!("{}. Create a task", "1".yellow());
+    println!("{}. Search for a task by title", "2".yellow());
+    println!("{}. Show all tasks titles", "3".yellow());
+    println!("{}. Edit a task", "4".yellow());
+    println!("{}. Delete a task", "5".yellow());
+    println!("{}. Show possible actions", "H".cyan());
+    println!("{}. Quit", "Q".red());
 }
 
 fn create_new_task(term: &Term, store: &mut Vec<Task>) {
