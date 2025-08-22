@@ -1,3 +1,4 @@
+use colored::Colorize;
 use uuid::Uuid;
 
 pub struct Task {
@@ -15,5 +16,20 @@ impl Task {
             description,
             timestamp: std::time::SystemTime::now()
         }
+    }
+}
+
+pub trait PrettyPrint {
+    fn pretty_print(&self) -> String;
+    fn pretty_print_with_count(&self, count: i32) -> String;
+}
+
+impl PrettyPrint for Task {
+    fn pretty_print(&self) -> String {
+        format!("{} {:?}", "Title: ".bright_blue(), self.title)
+    }
+
+    fn pretty_print_with_count(&self, count: i32) -> String {
+        format!("[{}] {}", format!("{}", count).yellow(), self.pretty_print())
     }
 }

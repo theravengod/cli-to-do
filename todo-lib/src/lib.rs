@@ -1,5 +1,6 @@
 mod task;
 
+use crate::task::PrettyPrint;
 use colored::Colorize;
 use console::Term;
 use std::io::Write;
@@ -30,8 +31,9 @@ fn show_menu(term: &Term, store: &mut Vec<Task>) {
         match (action) {
             Ok(ch) => {
                 match (ch) {
-                    '1' => create_new_task(&term, store),
+                    '1' => create_new_task(term, store),
                     '2' => search_note_by_title(term, store),
+                    '3' => show_all_tasks(term, store),
                     'h' | 'H' => show_actions(),
                     'q' | 'Q' => should_exit = true, // TODO: handle error
                     _ => println!("Invalid option")
@@ -93,5 +95,14 @@ fn search_note_by_title(term: &Term, store: &mut Vec<Task>) {
             println!("[{}] {}: {}", counter.to_string().yellow(), "Title: ".bright_blue(),  item.title);
             counter += 1;
         }
+    }
+}
+
+fn show_all_tasks(term: &Term, store: &mut Vec<Task>) {
+    println!("{}", "[Show all tasks]".bright_white());
+    let mut counter = 1;
+    for item in store {
+        println!("{}", item.pretty_print_with_count(counter));
+        counter += 1;
     }
 }
