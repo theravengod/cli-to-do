@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 colored = "3.0.0"
 console = "0.16.0"
+uuid = { version = "1.18.0", features = ["v4"] }

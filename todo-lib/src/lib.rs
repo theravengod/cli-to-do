@@ -1,5 +1,8 @@
+mod task;
+
 use colored::Colorize;
 use console::Term;
+use task::Task;
 
 pub fn run_mode(args: &Vec<String>) {
     if args.iter().len() > 0 {
@@ -25,12 +28,27 @@ fn show_menu() {
     match (term.read_char()) {
         Ok(ch) => {
             let action = match (ch) {
-                '1' => 1,
+                '1' => {
+                    create_new_note(&term);
+                    1
+                },
                 '2' => 2,
-                _ => -1
+                _ => -1 // TODO: handle error
             };
             println!("Action: {}", action)
         }
         Err(_) => {}
     }
+}
+
+fn create_new_note(term: &Term) {
+    println!("{}", "[Creating a new note]".bright_white());
+    // Title
+    print!("{}", "Title:".bright_blue());
+    let title = term.read_line().unwrap();
+    // Description
+    print!("{}", "Description:".bright_blue());
+    let desc = term.read_line().unwrap();
+
+    let note = Task::new(title, desc); //TODO: save this somewhere
 }
