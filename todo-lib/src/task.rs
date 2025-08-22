@@ -1,8 +1,8 @@
 use uuid::Uuid;
 
 pub struct Task {
-    id: Uuid,
-    title: String,
+    pub id: Uuid,
+    pub title: String,
     description: String,
     timestamp: std::time::SystemTime
 }
