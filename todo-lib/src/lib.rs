@@ -46,17 +46,17 @@ fn show_menu(term: &Term, store: &mut Vec<Task>) {
 
 fn show_actions() {
     println!("Possible actions:");
-    println!("{}. Create a task", "1".yellow());
-    println!("{}. Search for a task by title", "2".yellow());
-    println!("{}. Show all tasks titles", "3".yellow());
-    println!("{}. Edit a task", "4".yellow());
-    println!("{}. Delete a task", "5".yellow());
-    println!("{}. Show possible actions", "H".cyan());
-    println!("{}. Quit", "Q".red());
+    println!("{}) Create a task", "1".yellow());
+    println!("{}) Search for a task by title", "2".yellow());
+    println!("{}) Show all tasks titles", "3".yellow());
+    println!("{}) Edit a task", "4".yellow());
+    println!("{}) Delete a task", "5".yellow());
+    println!("{}) Show possible actions", "H".cyan());
+    println!("{}) Quit", "Q".red());
 }
 
 fn create_new_task(term: &Term, store: &mut Vec<Task>) {
-    println!("{}", "[Creating a new task]".bright_white());
+    print_header("Creating a new task");
     // Title
     print!("{}", "Title:".bright_blue());
     let title = term.read_line().unwrap();
@@ -68,7 +68,7 @@ fn create_new_task(term: &Term, store: &mut Vec<Task>) {
     match (store.iter().find(|&item| item.id == note.id)) {
         None => {
             store.push(note);
-            println!("{}", "Task created".bright_green())
+            println!("{}", "Task created\n".bright_green());
         }
         Some(_) => {
             eprintln!("A task with the same ID already exists - Your new task was {} created", "NOT".red());
@@ -78,7 +78,7 @@ fn create_new_task(term: &Term, store: &mut Vec<Task>) {
 }
 
 fn search_note_by_title(term: &Term, store: &mut Vec<Task>) {
-    println!("{}", "[Search by title]".bright_white());
+    print_header("Search by title");
     print!("{}", "Search for:".bright_blue());
     let search_criteria = term.read_line().unwrap();
     let findings: Vec<&Task> = store.iter()
@@ -99,10 +99,18 @@ fn search_note_by_title(term: &Term, store: &mut Vec<Task>) {
 }
 
 fn show_all_tasks(term: &Term, store: &mut Vec<Task>) {
-    println!("{}", "[Show all tasks]".bright_white());
+    print_header("Show all tasks");
     let mut counter = 1;
     for item in store {
         println!("{}", item.pretty_print_with_count(counter));
         counter += 1;
     }
+}
+
+fn cls(term: &Term, lines: usize) {
+    term.clear_last_lines(lines).unwrap()
+}
+
+fn print_header(title: &str) {
+    println!("\n{}{}{}", "[".yellow(), title.bright_magenta(), "]".yellow());
 }
