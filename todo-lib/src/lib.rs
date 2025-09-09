@@ -4,8 +4,8 @@ use crate::task::PrettyPrint;
 use colored::Colorize;
 use console::Term;
 use std::io::Write;
-use uuid::Uuid;
 use task::Task;
+use uuid::Uuid;
 
 pub fn run_mode(args: &Vec<String>) {
     // Some inits
@@ -15,13 +15,13 @@ pub fn run_mode(args: &Vec<String>) {
 
     // Logic
     if args.iter().len() > 0 {
-        show_menu(&term, &mut task_store, &mut active_task_id)
+        show_menu(&term, &mut task_store, active_task_id)
     } else {
         println!("With args")
     }
 }
 
-fn show_menu(term: &Term, store: &mut Vec<Task>, active_task_id: &mut Option<Uuid>) {
+fn show_menu(term: &Term, store: &mut Vec<Task>, mut active_task_id: Option<Uuid>) {
     println!("..:: {} ::..\n", "To Do Manager".bright_white());
     show_actions(active_task_id.is_some());
 
@@ -37,7 +37,9 @@ fn show_menu(term: &Term, store: &mut Vec<Task>, active_task_id: &mut Option<Uui
                         '1' => create_new_task(term, store),
                         '2' => search_note_by_title(term, store),
                         '3' => show_all_tasks(term, store),
-                        '4' => println!("Select a task"),
+                        '4' => {
+                            active_task_id = select_a_task(term, store);
+                        },
                         'h' | 'H' => show_actions(active_task_id.is_some()),
                         'q' | 'Q' => should_exit = true, // TODO: handle error
                         _ => println!("Invalid option")
@@ -127,6 +129,56 @@ fn show_all_tasks(term: &Term, store: &mut Vec<Task>) {
     for item in store {
         println!("{}", item.pretty_print_with_count(counter));
         counter += 1;
+    }
+}
+
+fn select_a_task(term: &Term, store: &mut Vec<Task>) -> Option<Uuid> {
+    print_header("Select a task");
+    print!("{}", "Enter the task number or part of its title:".bright_blue());
+    let searched_text = term.read_line().unwrap();
+    if searched_text.is_empty() {
+        println!("No tasks matching that number or title found.");
+        return None;
+    }
+    let results = selection_search(term, store, searched_text.as_str())
+        .expect("No tasks matching that number or title found.");
+
+    if results.iter().len() == 1 {
+        let position = store.iter().position(|t| t.id == results[0]).unwrap();
+        let task = store.iter().nth(position).unwrap();
+        println!("Select task : {} ? [y/n]", task.pretty_print_with_count(position as i32));
+        Some(task.id)
+    } else {
+        let findings: Vec<&Task> = store.iter().filter(|&item| results.contains(&item.id)).collect();
+        let count = format!("{:?}", findings.iter().count());
+        println!("Found {} task(s):", count.bright_cyan());
+        for item in &findings {
+            let counter = store.iter().position(|t| t.id == item.id).unwrap() + 1;
+            println!("[{}] {}: {}", counter.to_string().yellow(), "Title: ".bright_blue(), item.title);
+        }
+        println!("Select the task number:");
+        Some(findings.first().unwrap().id)
+    }
+}
+
+fn selection_search(term: &Term, store: &mut Vec<Task>, search_text: &str) -> Option<Vec<Uuid>> {
+    if search_text.is_empty() {
+        None
+    } else {
+        if search_text.trim_ascii().chars().all(|c| c.is_numeric()) {
+            let index = search_text.trim_ascii().parse::<usize>().unwrap();
+            Some(vec!(store.get(index - 1)?.id))
+        } else {
+            let findings: Vec<&Task> = store.iter()
+                .filter(|&item| item.title.contains(search_text))
+                .collect();
+
+            if findings.is_empty() {
+                None
+            } else {
+                Some(findings.iter().map(|item| item.id).collect())
+            }
+        }
     }
 }
 
