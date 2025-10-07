@@ -25,9 +25,25 @@ fn show_menu(term: &Term) {
         let action = term.read_char();
         match action {
             Ok(ch) => {
-                match ch {
-                    'q' | 'Q' => should_exit = true,
-                    _ => println!("\nInvalid option !")
+                if selected_note.is_none() {
+                    match ch {
+                        '1' => println!("Show all"),
+                        '2' => println!("Open note"),
+                        '3' => println!("Search"),
+                        'a' | 'A' => println!("Create"),
+                        'q' | 'Q' => should_exit = true,
+                        _ => println!("\nInvalid option !")
+                    }
+                } else {
+                    match ch {
+                        '1' => println!("Show content"),
+                        '2' => println!("Edit title"),
+                        '3' => println!("Edit desc"),
+                        '4' => println!("Delete note"),
+                        'c' | 'C' => println!("Clear selection"),
+                        'q' | 'Q' => should_exit = true,
+                        _ => println!("\nInvalid option !")
+                    }
                 }
             },
             Err(_) => {
