@@ -1,4 +1,4 @@
-use crate::note::Note;
+use crate::note::{Displayable, Note};
 use colored::Colorize;
 use console::Term;
 use std::io::Write;
@@ -7,12 +7,12 @@ mod note;
 
 pub fn run_main() {
     let term = Term::stdout();
-    let all_notes: Vec<Note> = Vec::new();
+    let notebook: Vec<Note> = Vec::new();
 
-    show_menu(&term);
+    show_menu(&term, notebook);
 }
 
-fn show_menu(term: &Term) {
+fn show_menu(term: &Term, mut notebook: Vec<Note>) {
     let mut selected_note: Option<Note> = None;
 
     println!("..:: {} ::..\n", "To Do Manager".bright_magenta());
@@ -27,10 +27,11 @@ fn show_menu(term: &Term) {
             Ok(ch) => {
                 if selected_note.is_none() {
                     match ch {
-                        '1' => println!("Show all"),
+                        '1' => show_all(term, &notebook),
                         '2' => println!("Open note"),
                         '3' => println!("Search"),
-                        'a' | 'A' => println!("Create"),
+                        'a' | 'A' => add_new_note(term, &mut notebook),
+                        'h' | 'H' => show_options(selected_note.is_some()),
                         'q' | 'Q' => should_exit = true,
                         _ => println!("\nInvalid option !")
                     }
@@ -41,6 +42,7 @@ fn show_menu(term: &Term) {
                         '3' => println!("Edit desc"),
                         '4' => println!("Delete note"),
                         'c' | 'C' => println!("Clear selection"),
+                        'h' | 'H' => show_options(selected_note.is_some()),
                         'q' | 'Q' => should_exit = true,
                         _ => println!("\nInvalid option !")
                     }
@@ -69,4 +71,33 @@ fn show_options(has_opened_note: bool) {
     }
     println!("{}) Show possible actions", "H".cyan());
     println!("{}) Quit", "Q".red());
+}
+
+fn add_new_note(term: &Term, notebook: &mut Vec<Note>) {
+    print_header("Add a new note");
+
+    print!("{}", "Title: ".bright_blue());
+    let title = term.read_line().unwrap();
+
+    print!("{}", "Description: ".bright_blue());
+    let description = term.read_line().unwrap();
+
+    let note = Note::new(title, description);
+    notebook.push(note);
+    println!("{}", "Note created\n".bright_green());
+}
+
+fn show_all(term: &Term, notebook: &Vec<Note>) {
+    print_header("Show all notes");
+
+    let mut counter: u32 = 1;
+    for item in notebook {
+        item.display_with_counter(counter);
+        counter += 1;
+    }
+}
+
+// Util methods
+fn print_header(title: &str) {
+    println!("\n{}{}{}", "[".yellow(), title.bright_magenta(), "]".yellow());
 }

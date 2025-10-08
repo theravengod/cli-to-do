@@ -1,3 +1,5 @@
+use chrono::{DateTime, Utc};
+use colored::Colorize;
 use std::time::SystemTime;
 
 pub struct Note {
@@ -13,5 +15,20 @@ impl Note {
             description,
             timestamp: SystemTime::now(),
         }
+    }
+}
+
+pub trait Displayable {
+    fn display_with_counter(&self, counter: u32);
+}
+
+impl Displayable for Note {
+    fn display_with_counter(&self, counter: u32) {
+        let formatter: DateTime<Utc> = self.timestamp.into();
+        println!("{}. {} {}",
+                 counter.to_string().bright_green(),
+                 self.title.bright_white(),
+                 format!("[{}]", formatter.format("%F %T")).cyan()
+        )
     }
 }
