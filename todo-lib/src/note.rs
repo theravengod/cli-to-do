@@ -5,7 +5,7 @@ use std::time::SystemTime;
 pub struct Note {
     pub title: String,
     pub description: String,
-    timestamp: std::time::SystemTime,
+    pub timestamp: SystemTime,
 }
 
 impl Note {

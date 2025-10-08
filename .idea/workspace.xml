@@ -14,10 +14,8 @@
     </cargoProject>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="215990d5-102f-4254-8f95-9725d2c725ae" name="Changes" comment="[WIP] New approach">
+    <list default="true" id="215990d5-102f-4254-8f95-9725d2c725ae" name="Changes" comment="[WIP] Add and Show all (with trait)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/todo-lib/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/todo-lib/Cargo.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/todo-lib/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/todo-lib/src/lib.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/todo-lib/src/note.rs" beforeDir="false" afterPath="$PROJECT_DIR$/todo-lib/src/note.rs" afterDir="false" />
     </list>
@@ -122,7 +120,7 @@
       <workItem from="1757357845150" duration="143000" />
       <workItem from="1757404203657" duration="3719000" />
       <workItem from="1759857368082" duration="2850000" />
-      <workItem from="1759945542240" duration="2401000" />
+      <workItem from="1759945542240" duration="6510000" />
     </task>
     <task id="LOCAL-00001" summary="Fixed RustRover not building">
       <option name="closed" value="true" />
@@ -148,7 +146,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759859733518</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="[WIP] Add and Show all (with trait)">
+      <option name="closed" value="true" />
+      <created>1759947986345</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1759947986345</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -169,7 +175,8 @@
     <MESSAGE value="Fixed RustRover not building" />
     <MESSAGE value="[WIP] Select active task" />
     <MESSAGE value="[WIP] New approach" />
-    <option name="LAST_COMMIT_MESSAGE" value="[WIP] New approach" />
+    <MESSAGE value="[WIP] Add and Show all (with trait)" />
+    <option name="LAST_COMMIT_MESSAGE" value="[WIP] Add and Show all (with trait)" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
