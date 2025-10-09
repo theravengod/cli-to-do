@@ -28,7 +28,7 @@ fn show_menu(term: &Term, notebook: &mut Vec<Note>) {
             Ok(ch) => {
                 if selected_note.is_none() {
                     match ch {
-                        '1' => show_notes(notebook),
+                        '1' => show_notes(&notebook.iter().collect()),
                         '2' => { selected_note = open_note(term, notebook) },
                         '3' => println!("Search"),
                         'a' | 'A' => {
@@ -90,7 +90,7 @@ fn add_new_note(term: &Term) -> Note {
     note
 }
 
-fn show_notes(notebook: &Vec<Note>) {
+fn show_notes(notebook: &Vec<&Note>) {
     print_header("Show all notes");
 
     let mut counter: u32 = 1;
@@ -120,15 +120,15 @@ fn open_note(term: &Term, notebook: &Vec<Note>) -> Option<SystemTime> {
                 .find(|nn| selected_timestamp == nn.timestamp)
                 ?.timestamp)
         },
-        '2' => show_notes(notebook),
-        '3' => println!("Search by title"),
+        '2' => show_notes(&notebook.iter().collect()),
+        '3' => { selection = search_by_title(term, notebook) },
         _ => eprintln!("No such option ! Nothing selected.")
     }
 
     selection
 }
 
-fn search_by_title(term: &Term, notebook: &Vec<Note>) {
+fn search_by_title(term: &Term, notebook: &Vec<Note>) -> Option<SystemTime> {
     print_header("Search by title");
 
     print!("Enter the title or part of it: ");
@@ -136,27 +136,31 @@ fn search_by_title(term: &Term, notebook: &Vec<Note>) {
     let search_criteria = term.read_line().unwrap();
     if search_criteria.is_empty() {
         eprintln!("Nothing provided.");
-        return;
+        None
     } else {
-        let findings = selection_search(notebook, search_criteria.as_str());
+        let findings: Vec<&Note> = notebook.iter()
+            .filter(|item| item.title.contains(search_criteria.as_str()))
+            .collect();
+        print_and_select_a_note(term, &findings)
     }
 }
 
-fn print_and_select_a_note(term: &Term, notes: &Vec<Note>) -> Option<Note> {
+fn print_and_select_a_note(term: &Term, notes: &Vec<&Note>) -> Option<SystemTime> {
     if !notes.is_empty() {
         show_notes(notes);
-        print!("\nInput the number of the note you want to select (or input X exit):");
+        print!("\nInput the number of the note you want to select (or input {} exit):", "X".bright_red());
         std::io::stdout().flush().unwrap(); // Ensure the prompt is displayed
         let selection = term.read_line().unwrap();
         match selection.as_str() {
-            "X" => {},
+            "X" => {
+                None
+            },
             _ => {
                 let nr = selection.trim_ascii().parse::<usize>().unwrap();
+                Some(notes.get(nr - 1).unwrap().timestamp)
             }
         }
-    }
-
-    None
+    } else { None }
 }
 
 // Util methods

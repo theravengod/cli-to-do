@@ -14,7 +14,7 @@
     </cargoProject>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="215990d5-102f-4254-8f95-9725d2c725ae" name="Changes" comment="[WIP] Won borrow checker fight">
+    <list default="true" id="215990d5-102f-4254-8f95-9725d2c725ae" name="Changes" comment="[WIP] Work on search by title">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/todo-lib/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/todo-lib/src/lib.rs" afterDir="false" />
     </list>
@@ -120,7 +120,7 @@
       <workItem from="1757404203657" duration="3719000" />
       <workItem from="1759857368082" duration="2850000" />
       <workItem from="1759945542240" duration="6531000" />
-      <workItem from="1759988613891" duration="3243000" />
+      <workItem from="1759988613891" duration="4999000" />
     </task>
     <task id="LOCAL-00001" summary="Fixed RustRover not building">
       <option name="closed" value="true" />
@@ -170,7 +170,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759990135504</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="[WIP] Work on search by title">
+      <option name="closed" value="true" />
+      <created>1760003831684</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1760003831684</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -194,7 +202,8 @@
     <MESSAGE value="[WIP] Add and Show all (with trait)" />
     <MESSAGE value="[WIP] Try to add" />
     <MESSAGE value="[WIP] Won borrow checker fight" />
-    <option name="LAST_COMMIT_MESSAGE" value="[WIP] Won borrow checker fight" />
+    <MESSAGE value="[WIP] Work on search by title" />
+    <option name="LAST_COMMIT_MESSAGE" value="[WIP] Work on search by title" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
