@@ -28,7 +28,7 @@ fn show_menu(term: &Term, notebook: &mut Vec<Note>) {
             Ok(ch) => {
                 if selected_note.is_none() {
                     match ch {
-                        '1' => show_notes(&notebook.iter().collect()),
+                        '1' => show_notes(notebook),
                         '2' => { selected_note = open_note(term, notebook) },
                         '3' => println!("Search"),
                         'a' | 'A' => {
@@ -90,7 +90,7 @@ fn add_new_note(term: &Term) -> Note {
     note
 }
 
-fn show_notes(notebook: &Vec<&Note>) {
+fn show_notes(notebook: &Vec<Note>) {
     print_header("Show all notes");
 
     let mut counter: u32 = 1;
@@ -120,7 +120,7 @@ fn open_note(term: &Term, notebook: &Vec<Note>) -> Option<SystemTime> {
                 .find(|nn| selected_timestamp == nn.timestamp)
                 ?.timestamp)
         },
-        '2' => show_notes(&notebook.iter().collect()),
+        '2' => show_notes(notebook),
         '3' => { selection = search_by_title(term, notebook) },
         _ => eprintln!("No such option ! Nothing selected.")
     }
@@ -138,14 +138,17 @@ fn search_by_title(term: &Term, notebook: &Vec<Note>) -> Option<SystemTime> {
         eprintln!("Nothing provided.");
         None
     } else {
-        let findings: Vec<&Note> = notebook.iter()
+        let findings: Vec<Note> = notebook
+            .iter()
             .filter(|item| item.title.contains(search_criteria.as_str()))
+            .cloned()
             .collect();
+
         print_and_select_a_note(term, &findings)
     }
 }
 
-fn print_and_select_a_note(term: &Term, notes: &Vec<&Note>) -> Option<SystemTime> {
+fn print_and_select_a_note(term: &Term, notes: &Vec<Note>) -> Option<SystemTime> {
     if !notes.is_empty() {
         show_notes(notes);
         print!("\nInput the number of the note you want to select (or input {} exit):", "X".bright_red());
@@ -176,7 +179,7 @@ fn selection_search<'a>(notebook: &'a Vec<Note>, search_text: &str) -> Option<Ve
             let index = search_text.trim_ascii().parse::<usize>().unwrap();
             Some(vec!(notebook.get(index - 1).unwrap()))
         } else {
-            let findings: Vec<&Note> = notebook.iter()
+            let findings: Vec<&Note> = notebook.into_iter()
                 .filter(|&item| item.title.contains(search_text))
                 .collect();
 

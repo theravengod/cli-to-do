@@ -14,9 +14,10 @@
     </cargoProject>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="215990d5-102f-4254-8f95-9725d2c725ae" name="Changes" comment="[WIP] Work on search by title">
+    <list default="true" id="215990d5-102f-4254-8f95-9725d2c725ae" name="Changes" comment="[WIP] Maybe as such">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/todo-lib/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/todo-lib/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/todo-lib/src/note.rs" beforeDir="false" afterPath="$PROJECT_DIR$/todo-lib/src/note.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -120,7 +121,7 @@
       <workItem from="1757404203657" duration="3719000" />
       <workItem from="1759857368082" duration="2850000" />
       <workItem from="1759945542240" duration="6531000" />
-      <workItem from="1759988613891" duration="4999000" />
+      <workItem from="1759988613891" duration="5955000" />
     </task>
     <task id="LOCAL-00001" summary="Fixed RustRover not building">
       <option name="closed" value="true" />
@@ -178,7 +179,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760003831684</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="[WIP] Maybe as such">
+      <option name="closed" value="true" />
+      <created>1760010048118</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1760010048118</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -203,7 +212,8 @@
     <MESSAGE value="[WIP] Try to add" />
     <MESSAGE value="[WIP] Won borrow checker fight" />
     <MESSAGE value="[WIP] Work on search by title" />
-    <option name="LAST_COMMIT_MESSAGE" value="[WIP] Work on search by title" />
+    <MESSAGE value="[WIP] Maybe as such" />
+    <option name="LAST_COMMIT_MESSAGE" value="[WIP] Maybe as such" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>

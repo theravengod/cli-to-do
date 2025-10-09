@@ -2,6 +2,7 @@ use chrono::{DateTime, Utc};
 use colored::Colorize;
 use std::time::SystemTime;
 
+#[derive(Clone)]
 pub struct Note {
     pub title: String,
     pub description: String,
