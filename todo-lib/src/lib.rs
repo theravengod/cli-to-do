@@ -2,18 +2,19 @@ use crate::note::{Displayable, Note};
 use colored::Colorize;
 use console::Term;
 use std::io::Write;
+use std::time::SystemTime;
 
 mod note;
 
 pub fn run_main() {
     let term = Term::stdout();
-    let notebook: Vec<Note> = Vec::new();
+    let mut notebook: Vec<Note> = Vec::new();
 
-    show_menu(&term, notebook);
+    show_menu(&term, &mut notebook);
 }
 
-fn show_menu(term: &Term, mut notebook: Vec<Note>) {
-    let mut selected_note: Option<&Note> = None;
+fn show_menu(term: &Term, notebook: &mut Vec<Note>) {
+    let mut selected_note: Option<SystemTime> = None;
 
     println!("..:: {} ::..\n", "To Do Manager".bright_magenta());
     show_options(selected_note.is_some());
@@ -27,11 +28,11 @@ fn show_menu(term: &Term, mut notebook: Vec<Note>) {
             Ok(ch) => {
                 if selected_note.is_none() {
                     match ch {
-                        '1' => show_all(&notebook),
-                        '2' => { selected_note = open_note(term, &notebook) },
+                        '1' => show_all(notebook),
+                        '2' => { selected_note = open_note(term, notebook) },
                         '3' => println!("Search"),
                         'a' | 'A' => {
-                            //add_new_note(term).unwrap()
+                            notebook.push(add_new_note(term))
                         },
                         'h' | 'H' => show_options(selected_note.is_some()),
                         'q' | 'Q' => should_exit = true,
@@ -75,7 +76,7 @@ fn show_options(has_opened_note: bool) {
     println!("{}) Quit", "Q".red());
 }
 
-fn add_new_note(term: &Term) -> Option<Note> {
+fn add_new_note(term: &Term) -> Note {
     print_header("Add a new note");
 
     print!("{}", "Title: ".bright_blue());
@@ -86,10 +87,10 @@ fn add_new_note(term: &Term) -> Option<Note> {
 
     let note = Note::new(title, description);
     println!("{}", "Note created\n".bright_green());
-    Some(note)
+    note
 }
 
-fn show_all(notebook: &Vec<Note>) {
+fn show_all(notebook: &mut Vec<Note>) {
     print_header("Show all notes");
 
     let mut counter: u32 = 1;
@@ -99,9 +100,9 @@ fn show_all(notebook: &Vec<Note>) {
     }
 }
 
-fn open_note<'a>(term: &Term, notebook: &'a Vec<Note>) -> Option<&'a Note> {
+fn open_note<'a>(term: &Term, notebook: &mut Vec<Note>) -> Option<SystemTime> {
     print_header("Open a note");
-    let mut selection: Option<&Note> = None;
+    let mut selection: Option<SystemTime> = None;
 
     println!("{}) Select the note by number", "1".yellow());
     println!("{}) Show all notes titles", "2".yellow());
@@ -114,7 +115,10 @@ fn open_note<'a>(term: &Term, notebook: &'a Vec<Note>) -> Option<&'a Note> {
             print!("Enter the note number: ");
             let search_text = term.read_line().unwrap();
             let selected_timestamp = selection_search(notebook, &search_text)?.first().unwrap().timestamp;
-            selection = notebook.iter().find(|nn| selected_timestamp == nn.timestamp);
+            selection = Some(notebook
+                .iter()
+                .find(|nn| selected_timestamp == nn.timestamp)
+                ?.timestamp)
         },
         '2' => show_all(notebook),
         '3' => println!("Search by title"),
@@ -129,7 +133,7 @@ fn print_header(title: &str) {
     println!("\n{}{}{}", "[".yellow(), title.bright_magenta(), "]".yellow());
 }
 
-fn selection_search<'a>(notebook: &'a Vec<Note>, search_text: &str) -> Option<Vec<&'a Note>> {
+fn selection_search<'a>(notebook: &'a mut Vec<Note>, search_text: &str) -> Option<Vec<&'a Note>> {
     if search_text.is_empty() {
         None
     } else {
