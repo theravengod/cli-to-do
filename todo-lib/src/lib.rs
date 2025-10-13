@@ -2,6 +2,7 @@ use crate::note::{Displayable, Note};
 use colored::Colorize;
 use console::Term;
 use std::io::Write;
+use std::ops::IndexMut;
 use std::time::SystemTime;
 
 mod note;
@@ -40,8 +41,8 @@ fn show_menu(term: &Term, notebook: &mut Vec<Note>) {
                     }
                 } else {
                     match ch {
-                        '1' => println!("Show content"),
-                        '2' => println!("Edit title"),
+                        '1' => show_note(selected_note, notebook),
+                        '2' => edit_title(term, selected_note, notebook),
                         '3' => println!("Edit desc"),
                         '4' => println!("Delete note"),
                         'c' | 'C' => println!("Clear selection"),
@@ -95,7 +96,7 @@ fn show_notes(notebook: &Vec<Note>) {
 
     let mut counter: u32 = 1;
     for item in notebook {
-        item.display_with_counter(counter);
+        item.display_in_list_with_counter(counter);
         counter += 1;
     }
 }
@@ -166,6 +167,32 @@ fn print_and_select_a_note(term: &Term, notes: &Vec<Note>) -> Option<SystemTime>
     } else { None }
 }
 
+fn show_note(selection: Option<SystemTime>, notes: &Vec<Note>) {
+    print_header("Show selected note");
+    let note = get_from_notebook(selection, notes).unwrap();
+    note.show_entire(None);
+}
+
+fn edit_title(term: &Term, selection: Option<SystemTime>, notes: &mut Vec<Note>) {
+    print_header("Edit the selected note title");
+    let pos = if selection.is_some() {
+        notes.iter().position(|n| n.timestamp == selection.unwrap())
+    } else {
+        None
+    };
+
+    if pos.is_some() {
+        print!("Enter the new title:");
+        std::io::stdout().flush().unwrap(); // Ensure the prompt is displayed
+        let new_title = term.read_line().unwrap();
+
+        notes.index_mut(pos.unwrap()).title = new_title;
+        println!("\nUpdate successful\n");
+    } else {
+        eprintln!("\nCould not find note marked as selection");
+    }
+}
+
 // Util methods
 fn print_header(title: &str) {
     println!("\n{}{}{}", "[".yellow(), title.bright_magenta(), "]".yellow());
@@ -190,4 +217,8 @@ fn selection_search<'a>(notebook: &'a Vec<Note>, search_text: &str) -> Option<Ve
             }
         }
     }
+}
+
+fn get_from_notebook(selection: Option<SystemTime>, notes: &Vec<Note>) -> Option<&Note> {
+    notes.iter().find(|n| n.timestamp == selection.unwrap())
 }

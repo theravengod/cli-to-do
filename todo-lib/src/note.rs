@@ -20,16 +20,26 @@ impl Note {
 }
 
 pub trait Displayable {
-    fn display_with_counter(&self, counter: u32);
+    fn display_in_list_with_counter(&self, counter: u32);
+    fn show_entire(&self, num: Option<usize>);
 }
 
 impl Displayable for Note {
-    fn display_with_counter(&self, counter: u32) {
+    fn display_in_list_with_counter(&self, counter: u32) {
         let formatter: DateTime<Utc> = self.timestamp.into();
         println!("{}. {} {}",
                  counter.to_string().bright_green(),
                  self.title.bright_white(),
                  format!("[{}]", formatter.format("%F %T")).cyan()
         )
+    }
+    fn show_entire(&self, num: Option<usize>) {
+        if num.is_some() {
+            print!("[{}] ", num.unwrap().to_string().bright_green());
+        }
+        println!("{}", self.title.bright_blue());
+        let formatter: DateTime<Utc> = self.timestamp.into();
+        println!("Created at: {}\n", format!("{}", formatter.format("%F %T")).cyan());
+        println!("{}", self.description)
     }
 }
