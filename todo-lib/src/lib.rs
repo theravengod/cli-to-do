@@ -1,3 +1,4 @@
+use std::fmt::format;
 use crate::note::{Displayable, Note};
 use colored::Colorize;
 use console::Term;
@@ -42,8 +43,16 @@ fn show_menu(term: &Term, notebook: &mut Vec<Note>) {
                 } else {
                     match ch {
                         '1' => show_note(selected_note, notebook),
-                        '2' => edit_title(term, selected_note, notebook),
-                        '3' => println!("Edit desc"),
+                        '2' => {
+                            change_note(term, selected_note, notebook, "title", | note: &mut Note, new_title: String| {
+                                note.title = new_title;
+                            });
+                        },
+                        '3' => {
+                            change_note(term, selected_note, notebook, "description", | note: &mut Note, new_desc: String| {
+                                note.title = new_desc;
+                            });
+                        },
                         '4' => println!("Delete note"),
                         'c' | 'C' => println!("Clear selection"),
                         'h' | 'H' => show_options(selected_note.is_some()),
@@ -173,8 +182,8 @@ fn show_note(selection: Option<SystemTime>, notes: &Vec<Note>) {
     note.show_entire(None);
 }
 
-fn edit_title(term: &Term, selection: Option<SystemTime>, notes: &mut Vec<Note>) {
-    print_header("Edit the selected note title");
+fn change_note(term: &Term, selection: Option<SystemTime>, notes: &mut Vec<Note>, what:&str, action: fn(&mut Note, String)) {
+    print_header(format!("Edit the selected note {}", what).as_str());
     let pos = if selection.is_some() {
         notes.iter().position(|n| n.timestamp == selection.unwrap())
     } else {
@@ -182,11 +191,12 @@ fn edit_title(term: &Term, selection: Option<SystemTime>, notes: &mut Vec<Note>)
     };
 
     if pos.is_some() {
-        print!("Enter the new title:");
+        print!("Enter the new {}", what);
         std::io::stdout().flush().unwrap(); // Ensure the prompt is displayed
         let new_title = term.read_line().unwrap();
 
-        notes.index_mut(pos.unwrap()).title = new_title;
+        let note_to_change = notes.index_mut(pos.unwrap());
+        action(note_to_change, new_title);
         println!("\nUpdate successful\n");
     } else {
         eprintln!("\nCould not find note marked as selection");
