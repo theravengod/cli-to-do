@@ -1,4 +1,3 @@
-use std::fmt::format;
 use crate::note::{Displayable, Note};
 use colored::Colorize;
 use console::Term;
@@ -32,7 +31,7 @@ fn show_menu(term: &Term, notebook: &mut Vec<Note>) {
                     match ch {
                         '1' => show_notes(notebook),
                         '2' => { selected_note = open_note(term, notebook) },
-                        '3' => println!("Search"),
+                        '3' => search_with_original_index(term, notebook),
                         'a' | 'A' => {
                             notebook.push(add_new_note(term))
                         },
@@ -50,11 +49,18 @@ fn show_menu(term: &Term, notebook: &mut Vec<Note>) {
                         },
                         '3' => {
                             change_note(term, selected_note, notebook, "description", | note: &mut Note, new_desc: String| {
-                                note.title = new_desc;
+                                note.description = new_desc;
                             });
                         },
-                        '4' => println!("Delete note"),
-                        'c' | 'C' => println!("Clear selection"),
+                        '4' => {
+                            if delete_current_note(selected_note, notebook) {
+                                selected_note = None;
+                            }
+                        },
+                        'c' | 'C' => {
+                            selected_note = None;
+                            println!("Selection cleared. No note selected at the moment");
+                        },
                         'h' | 'H' => show_options(selected_note.is_some()),
                         'q' | 'Q' => should_exit = true,
                         _ => println!("\nInvalid option !")
@@ -70,6 +76,7 @@ fn show_menu(term: &Term, notebook: &mut Vec<Note>) {
 }
 
 fn show_options(has_opened_note: bool) {
+    println!();
     if !has_opened_note {
         println!("{}) Show all notes titles", "1".yellow());
         println!("{}) Open a note to view or edit", "2".yellow());
@@ -191,7 +198,7 @@ fn change_note(term: &Term, selection: Option<SystemTime>, notes: &mut Vec<Note>
     };
 
     if pos.is_some() {
-        print!("Enter the new {}", what);
+        print!("Enter the new {}:", what);
         std::io::stdout().flush().unwrap(); // Ensure the prompt is displayed
         let new_title = term.read_line().unwrap();
 
@@ -200,6 +207,34 @@ fn change_note(term: &Term, selection: Option<SystemTime>, notes: &mut Vec<Note>
         println!("\nUpdate successful\n");
     } else {
         eprintln!("\nCould not find note marked as selection");
+    }
+}
+
+fn delete_current_note(selection: Option<SystemTime>, notes: &mut Vec<Note>) -> bool {
+    print_header("Deleting the selected note");
+    if let Some(index) = notes.iter().position(|value| value.timestamp == selection.unwrap()) {
+        notes.swap_remove(index);
+        println!("\nNote deleted\n");
+        true
+    } else {
+        false
+    }
+}
+
+fn search_with_original_index(term: &Term, notes: &mut Vec<Note>) {
+    print_header("Search for a note by title");
+
+    print!("Enter the search criteria:");
+    std::io::stdout().flush().unwrap(); // Ensure the prompt is displayed
+
+    if let Ok(search_text) = term.read_line() {
+        let mut counter = 1;
+        for item in notes {
+            if item.title.contains(search_text.as_str()) {
+                item.display_in_list_with_counter(counter);
+            }
+            counter += 1;
+        }
     }
 }
 
