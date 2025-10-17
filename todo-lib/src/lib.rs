@@ -173,6 +173,7 @@ fn print_and_select_a_note(term: &Term, notes: &Vec<Note>) -> Option<SystemTime>
         let selection = term.read_line().unwrap();
         match selection.as_str() {
             "X" => {
+                eprintln!("{}", "No note selected".red());
                 None
             },
             _ => {
@@ -180,7 +181,10 @@ fn print_and_select_a_note(term: &Term, notes: &Vec<Note>) -> Option<SystemTime>
                 Some(notes.get(nr - 1).unwrap().timestamp)
             }
         }
-    } else { None }
+    } else {
+        eprintln!("{}", "No notes matches the supplied criteria.".red());
+        None
+    }
 }
 
 fn show_note(selection: Option<SystemTime>, notes: &Vec<Note>) {
@@ -228,12 +232,18 @@ fn search_with_original_index(term: &Term, notes: &mut Vec<Note>) {
     std::io::stdout().flush().unwrap(); // Ensure the prompt is displayed
 
     if let Ok(search_text) = term.read_line() {
+        let mut found = 0;
         let mut counter = 1;
         for item in notes {
             if item.title.contains(search_text.as_str()) {
                 item.display_in_list_with_counter(counter);
+                found += 1;
             }
             counter += 1;
+        }
+
+        if found == 0 {
+            eprintln!("{}", "No notes match the supplied search criteria !".red())
         }
     }
 }
