@@ -4,14 +4,17 @@ use console::Term;
 use std::io::Write;
 use std::ops::IndexMut;
 use std::time::SystemTime;
+use crate::persistance::save_data;
 
 mod note;
+mod persistance;
 
 pub fn run_main() {
     let term = Term::stdout();
     let mut notebook: Vec<Note> = Vec::new();
 
     show_menu(&term, &mut notebook);
+    save_data(notebook)
 }
 
 fn show_menu(term: &Term, notebook: &mut Vec<Note>) {
