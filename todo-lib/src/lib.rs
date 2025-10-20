@@ -4,17 +4,19 @@ use console::Term;
 use std::io::Write;
 use std::ops::IndexMut;
 use std::time::SystemTime;
-use crate::persistance::save_data;
+use crate::persistence::{load_data, save_data};
 
 mod note;
-mod persistance;
+mod persistence;
 
 pub fn run_main() {
+    let storage: String = String::from("./storage.json");
+
     let term = Term::stdout();
-    let mut notebook: Vec<Note> = Vec::new();
+    let mut notebook: Vec<Note> = load_data(&storage).unwrap();
 
     show_menu(&term, &mut notebook);
-    save_data(notebook)
+    save_data(&storage, notebook)
 }
 
 fn show_menu(term: &Term, notebook: &mut Vec<Note>) {
